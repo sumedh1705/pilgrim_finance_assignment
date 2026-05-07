@@ -83,5 +83,5 @@ I built a clean Django template dashboard that includes:
 
 - Backend hosted on Vercel with Neon PostgreSQL
 - Live URL: [https://pilgrim-assignment-teal.vercel.app/](https://pilgrim-assignment-teal.vercel.app/)
-- GitHub repo: [https://github.com/sumedh1705/Pilgrim_assignment](https://github.com/sumedh1705/Pilgrim_assignment)
+- GitHub repo: [https://github.com/sumedh1705/pilgrim_finance_assignment](https://github.com/sumedh1705/pilgrim_finance_assignment)
 - Sample CSVs used: `sample_data/bank_statement.csv`, `sample_data/internal_ledger.csv`

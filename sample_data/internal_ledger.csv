@@ -1,0 +1,21 @@
+date,description,amount,category
+2026-05-01,May salary payroll,120000.00,Income
+2026-05-03,Swiggy food order,850.00,Food
+2026-05-04,Uber airport ride,1450.00,Travel
+2026-05-04,Amazon shopping,3299.00,Shopping
+2026-05-07,Office supplies,1600.00,Office
+2026-05-08,Zomato dinner,920.00,Food
+2026-05-08,Ola office cab,620.00,Travel
+2026-05-09,Airtel mobile recharge,799.00,Utilities
+2026-05-11,Flipkart electronics purchase,4599.00,Shopping
+2026-05-11,Savings account interest,650.00,Income
+2026-05-13,Metro travel card,500.00,Travel
+2026-05-13,Monthly house rent,30000.00,Rent
+2026-05-15,Cafe meeting expense,340.00,Food
+2026-05-15,ACT internet bill,1199.00,Utilities
+2026-05-16,Amazon refund,1299.00,Income
+2026-05-18,Train ticket booking,1850.00,Travel
+2026-05-18,Grocery purchase,2450.00,Shopping
+2026-05-20,Pharmacy medicines,780.00,Healthcare
+2026-05-20,Client invoice payment,45000.00,Income
+2026-05-21,Software subscription,999.00,Software

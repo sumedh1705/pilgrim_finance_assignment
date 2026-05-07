@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Finance Automation Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --panel: #ffffff;
+      --ink: #1d2433;
+      --muted: #687386;
+      --line: #dce1e8;
+      --accent: #176b87;
+      --accent-2: #b6465f;
+      --good: #2f8f5b;
+      --warn: #c47f20;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    .wrap {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    button, a.button {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--ink);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-weight: 650;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    button.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+
+    main {
+      padding: 24px 0 40px;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .metric, .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .metric {
+      padding: 16px;
+      min-height: 96px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      display: block;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 24px;
+      line-height: 1.15;
+      overflow-wrap: anywhere;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .panel {
+      padding: 16px;
+      min-height: 340px;
+    }
+
+    .panel h2 {
+      margin: 0 0 16px;
+      font-size: 16px;
+    }
+
+    .chart-box {
+      position: relative;
+      height: 260px;
+      width: 100%;
+    }
+
+    .status-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      padding: 10px 0;
+    }
+
+    .upload {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .upload form {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    input[type="file"] {
+      min-width: 0;
+      width: 100%;
+    }
+
+    .notice {
+      display: none;
+      margin-bottom: 18px;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--accent);
+      background: var(--panel);
+      border-radius: 6px;
+      padding: 12px 14px;
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .notice.error {
+      border-left-color: var(--accent-2);
+    }
+
+    @media (max-width: 760px) {
+      .topbar, .upload form {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .metrics, .grid, .upload {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        width: 100%;
+      }
+
+      button, a.button {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap topbar">
+      <h1>Finance Automation Dashboard</h1>
+      <div class="actions">
+        <button class="primary" id="reconcileBtn">Run Reconciliation</button>
+        <a class="button" href="/api/export/ledger.csv">Export Ledger CSV</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="notice" id="notice"></div>
+
+    <section class="upload" aria-label="CSV upload">
+      <form id="bankUpload">
+        <strong>Bank statement</strong>
+        <input name="file" type="file" accept=".csv" required>
+        <button type="submit">Upload</button>
+      </form>
+      <form id="internalUpload">
+        <strong>Internal ledger</strong>
+        <input name="file" type="file" accept=".csv" required>
+        <button type="submit">Upload</button>
+      </form>
+    </section>
+
+    <section class="metrics">
+      <div class="metric"><span>Total credits</span><strong id="credits">0</strong></div>
+      <div class="metric"><span>Total debits</span><strong id="debits">0</strong></div>
+      <div class="metric"><span>Unmatched amount</span><strong id="unmatched">0</strong></div>
+      <div class="metric"><span>Ledger entries</span><strong id="ledgerCount">0</strong></div>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2>Expense by category</h2>
+        <div class="chart-box">
+          <canvas id="categoryChart"></canvas>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Daily cashflow trend</h2>
+        <div class="chart-box">
+          <canvas id="cashflowChart"></canvas>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Reconciliation status</h2>
+        <div class="chart-box">
+          <canvas id="statusChart"></canvas>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Current status</h2>
+        <div class="status-list" id="statusList"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const money = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR" });
+    let categoryChart;
+    let cashflowChart;
+    let statusChart;
+
+    async function api(path, options = {}) {
+      const response = await fetch(path, options);
+      if (!response.ok) throw new Error(await response.text());
+      return response.json();
+    }
+
+    function showNotice(message, isError = false) {
+      const notice = document.getElementById("notice");
+      notice.textContent = message;
+      notice.classList.toggle("error", isError);
+      notice.style.display = "block";
+    }
+
+    function amount(value) {
+      return Number(value || 0);
+    }
+
+    function chart(canvasId, config, existing) {
+      if (existing) existing.destroy();
+      return new Chart(document.getElementById(canvasId), config);
+    }
+
+    async function refresh() {
+      const [summary, categories, cashflow, reconciliation] = await Promise.all([
+        api("/api/summary/"),
+        api("/api/category-breakdown/"),
+        api("/api/daily-cashflow/"),
+        api("/api/reconciliation/"),
+      ]);
+
+      document.getElementById("credits").textContent = money.format(amount(summary.total_credits));
+      document.getElementById("debits").textContent = money.format(amount(summary.total_debits));
+      document.getElementById("unmatched").textContent = money.format(amount(summary.unmatched_amount));
+      document.getElementById("ledgerCount").textContent = summary.ledger_entries;
+
+      categoryChart = chart("categoryChart", {
+        type: "bar",
+        data: {
+          labels: categories.map((row) => row.category),
+          datasets: [{ label: "Amount", data: categories.map((row) => amount(row.total)), backgroundColor: "#176b87" }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      }, categoryChart);
+
+      cashflowChart = chart("cashflowChart", {
+        type: "line",
+        data: {
+          labels: cashflow.map((row) => row.date),
+          datasets: [
+            { label: "Credits", data: cashflow.map((row) => amount(row.credits)), borderColor: "#2f8f5b", tension: 0.25 },
+            { label: "Debits", data: cashflow.map((row) => amount(row.debits)), borderColor: "#b6465f", tension: 0.25 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      }, cashflowChart);
+
+      const unmatchedCount = reconciliation.unmatched_bank.length + reconciliation.unmatched_internal.length;
+      statusChart = chart("statusChart", {
+        type: "doughnut",
+        data: {
+          labels: ["Matched", "Unmatched"],
+          datasets: [{
+            data: [reconciliation.matched.length, unmatchedCount],
+            backgroundColor: ["#2f8f5b", "#c47f20"]
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      }, statusChart);
+
+      document.getElementById("statusList").innerHTML = [
+        ["Matched pairs", reconciliation.matched.length],
+        ["Unmatched bank rows", reconciliation.unmatched_bank.length],
+        ["Unmatched internal rows", reconciliation.unmatched_internal.length],
+        ["Bank transactions", summary.bank_transactions],
+        ["Internal ledger entries", summary.internal_entries],
+      ].map(([label, value]) => `<div class="status-row"><span>${label}</span><strong>${value}</strong></div>`).join("");
+    }
+
+    async function upload(formId, endpoint) {
+      const form = document.getElementById(formId);
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        try {
+          const result = await api(endpoint, { method: "POST", body: new FormData(form) });
+          form.reset();
+          await refresh();
+          showNotice(`Upload complete: ${result.created} new rows, ${result.duplicates} duplicates skipped.`);
+        } catch (error) {
+          showNotice(`Upload failed: ${error.message}`, true);
+        }
+      });
+    }
+
+    document.getElementById("reconcileBtn").addEventListener("click", async () => {
+      try {
+        const result = await api("/api/run-reconciliation/", { method: "POST" });
+        await refresh();
+        showNotice(`Reconciliation complete: ${result.matched} matched, ${result.unmatched_bank} bank unmatched, ${result.unmatched_internal} internal unmatched.`);
+      } catch (error) {
+        showNotice(`Reconciliation failed: ${error.message}`, true);
+      }
+    });
+
+    upload("bankUpload", "/api/upload/bank-statement/");
+    upload("internalUpload", "/api/upload/internal-ledger/");
+    refresh().catch((error) => showNotice(`Dashboard refresh failed: ${error.message}`, true));
+  </script>
+</body>
+</html>

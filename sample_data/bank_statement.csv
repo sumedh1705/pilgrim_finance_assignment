@@ -1,0 +1,21 @@
+date,narration,amount,type
+2026-05-01,Salary May Payroll,120000.00,credit
+2026-05-02,Swiggy Order Koramangala,850.00,debit
+2026-05-03,Uber Trip Airport,1450.00,debit
+2026-05-04,Amazon Marketplace,3299.00,debit
+2026-05-05,Electricity Bill BESCOM,2100.00,debit
+2026-05-06,Unknown ATM Withdrawal,5000.00,debit
+2026-05-07,Zomato Dinner Order,920.00,debit
+2026-05-08,Ola Cab Office Ride,620.00,debit
+2026-05-09,Mobile Recharge Airtel,799.00,debit
+2026-05-10,Flipkart Electronics,4599.00,debit
+2026-05-11,Interest Credit Savings,650.00,credit
+2026-05-12,Metro Card Recharge,500.00,debit
+2026-05-13,House Rent Transfer,30000.00,debit
+2026-05-14,Cafe Coffee Day,340.00,debit
+2026-05-15,Internet Bill ACT,1199.00,debit
+2026-05-16,Refund Amazon Order,1299.00,credit
+2026-05-17,Train Ticket Booking,1850.00,debit
+2026-05-18,Grocery Store Purchase,2450.00,debit
+2026-05-19,Medical Pharmacy,780.00,debit
+2026-05-20,Client Payment Received,45000.00,credit

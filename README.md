@@ -23,13 +23,13 @@ I worked with two CSV files:
 
 ### 1) Data Ingestion
 
-- I upload both CSVs via API endpoints.
-- I store incoming rows in PostgreSQL-backed Django models.
-- I validate required columns, dates, and amounts during ingestion.
+- Uploaded both CSVs via API endpoints.
+- Stored incoming rows in PostgreSQL-backed Django models.
+- Validated required columns, dates, and amounts during ingestion.
 
 ### 2) Reconciliation Logic
 
-I match transactions between bank statements and internal ledger rows using:
+Matched transactions between bank statements and internal ledger rows using:
 
 - Exact amount match
 - Date difference <= 2 days
@@ -43,7 +43,7 @@ Output generated:
 
 ### 3) Ledger Automation
 
-I generate a normalized ledger table containing:
+Generated a normalized ledger table containing:
 
 - `date`
 - `amount`
@@ -53,7 +53,7 @@ I generate a normalized ledger table containing:
 
 ### 4) APIs (Django REST)
 
-I exposed these required APIs:
+Exposed these required APIs:
 
 - `/summary` -> total credits, total debits, unmatched amount
 - `/reconciliation` -> matched and unmatched entries

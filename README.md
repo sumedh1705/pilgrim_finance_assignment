@@ -73,7 +73,7 @@ I built a clean Django template dashboard that includes:
 - Daily cashflow trend
 - Reconciliation status
 
-## Bonus (Implemented)
+## Implemented
 
 - Auto-categorization rules (example: `Swiggy` -> `Food`)
 - Background reconciliation trigger via cron-compatible command
@@ -82,6 +82,6 @@ I built a clean Django template dashboard that includes:
 ## Deployment
 
 - Backend hosted on Vercel with Neon PostgreSQL
-- Live URL: [https://pilgrim-assignment-teal.vercel.app/](https://pilgrim-assignment-teal.vercel.app/)
+- Live URL: [https://finance-data-automation.vercel.app/](https://finance-data-automation.vercel.app/)
 - GitHub repo: [https://github.com/sumedh1705/Finance-Data-Automation-Dashboard](https://github.com/sumedh1705/Finance-Data-Automation-Dashboard)
 - Sample CSVs used: `sample_data/bank_statement.csv`, `sample_data/internal_ledger.csv`
